@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  ssl-proxy:
+    image: nginx:1-alpine
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./ssl-proxy/templates/:/etc/ngix/templates/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    environments:
+      - SSL_PROXY_HOSTNAME=localhost
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
